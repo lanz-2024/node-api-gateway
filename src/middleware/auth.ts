@@ -56,7 +56,8 @@ export function createAuthMiddleware(options: AuthMiddlewareOptions) {
           authMethod: 'jwt',
         });
 
-        return next();
+        await next();
+        return;
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Invalid token';
         return c.json(
@@ -83,7 +84,8 @@ export function createAuthMiddleware(options: AuthMiddlewareOptions) {
           roles,
           authMethod: 'api_key',
         });
-        return next();
+        await next();
+        return;
       }
 
       return c.json(
@@ -131,6 +133,7 @@ export function requireRole(role: string) {
         403
       );
     }
-    return next();
+    await next();
+    return;
   };
 }

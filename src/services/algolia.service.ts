@@ -67,8 +67,8 @@ export class AlgoliaService {
         hitsPerPage: params.hitsPerPage ?? 20,
       };
 
-      if (params.facets?.length) body.facets = params.facets;
-      if (params.facetFilters?.length) body.facetFilters = params.facetFilters;
+      if (params.facets?.length) body['facets'] = params.facets;
+      if (params.facetFilters?.length) body['facetFilters'] = params.facetFilters;
 
       const url = `https://${this.appId}-dsn.algolia.net/1/indexes/${this.indexName}/query`;
       const res = await fetch(url, {
@@ -95,7 +95,7 @@ export class AlgoliaService {
         price: h.price ?? '0.00',
         sku: h.sku ?? '',
         slug: h.slug ?? '',
-        image: h.image,
+        ...(h.image !== undefined ? { image: h.image } : {}),
       }));
 
       // Transform Algolia facets → our format
@@ -117,7 +117,7 @@ export class AlgoliaService {
         total: data.nbHits,
         page: data.page + 1, // normalize to 1-based
         per_page: data.hitsPerPage,
-        facets,
+        ...(facets !== undefined ? { facets } : {}),
         query: params.query,
       };
     });

@@ -125,7 +125,7 @@ export class WooCommerceService {
   ): Promise<CartItem> {
     return this.circuitBreaker.execute(async () => {
       const body: Record<string, unknown> = { id: productId, quantity };
-      if (variationId) body.variation_id = variationId;
+      if (variationId) body['variation_id'] = variationId;
 
       const res = await fetch(`${this.baseUrl}/wp-json/wc/store/v1/cart/add-item`, {
         method: 'POST',

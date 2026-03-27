@@ -20,7 +20,7 @@ const startedAt = Date.now();
 
 export function createHealthRouter(deps: HealthDeps): Hono {
   const router = new Hono();
-  const version = deps.version ?? process.env.npm_package_version ?? '0.1.0';
+  const version = deps.version ?? process.env['npm_package_version'] ?? '0.1.0';
 
   router.get('/health', (c) => {
     const body: HealthStatus = {

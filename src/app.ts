@@ -62,7 +62,7 @@ export function createApp(options: AppOptions = {}): Hono {
 
   // ── Logger ──────────────────────────────────────────────────────────────────
   const logger = pino({
-    level: env.NODE_ENV === 'test' ? 'silent' : (process.env.LOG_LEVEL ?? 'info'),
+    level: env.NODE_ENV === 'test' ? 'silent' : (process.env['LOG_LEVEL'] ?? 'info'),
     ...(env.NODE_ENV === 'development'
       ? { transport: { target: 'pino-pretty', options: { colorize: true } } }
       : {}),
