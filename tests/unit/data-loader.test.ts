@@ -5,7 +5,7 @@
  * are coalesced into a SINGLE batchLoadFn invocation, not N individual calls.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createProductLoader } from '../../src/lib/data-loader.js';
 import type { WooCommerceService } from '../../src/services/woocommerce.service.js';
 import type { Product } from '../../src/types/index.js';

@@ -19,24 +19,24 @@ const server = serve(
   (info) => {
     // pino is not yet available here — a single startup log is acceptable
     process.stdout.write(
-      JSON.stringify({
+      `${JSON.stringify({
         level: 'info',
         msg: 'Server started',
         port: info.port,
         env: env.NODE_ENV,
         pid: process.pid,
-      }) + '\n',
+      })}\n`
     );
-  },
+  }
 );
 
 // Graceful shutdown
 function shutdown(signal: string): void {
   process.stdout.write(
-    JSON.stringify({ level: 'info', msg: `Received ${signal}, shutting down` }) + '\n',
+    `${JSON.stringify({ level: 'info', msg: `Received ${signal}, shutting down` })}\n`
   );
   server.close(() => {
-    process.stdout.write(JSON.stringify({ level: 'info', msg: 'Server closed' }) + '\n');
+    process.stdout.write(`${JSON.stringify({ level: 'info', msg: 'Server closed' })}\n`);
     process.exit(0);
   });
 }

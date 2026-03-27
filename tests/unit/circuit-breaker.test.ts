@@ -8,7 +8,7 @@
  *   HALF_OPEN → OPEN    (any failure)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CircuitBreaker } from '../../src/lib/circuit-breaker.js';
 
 function makeBreaker(threshold = 3, timeout = 1000, successThreshold = 2) {

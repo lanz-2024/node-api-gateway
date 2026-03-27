@@ -8,10 +8,10 @@
  *   - Per-user scoping when auth context is present
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Context, Next } from 'hono';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRateLimiter } from '../../src/middleware/rate-limiter.js';
-import { InMemoryCache, CacheService } from '../../src/services/cache.service.js';
+import { CacheService, InMemoryCache } from '../../src/services/cache.service.js';
 
 function makeCache(): CacheService {
   return new CacheService(new InMemoryCache(), 'memory');

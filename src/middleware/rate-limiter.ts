@@ -19,9 +19,9 @@ interface TokenBucket {
 export function createRateLimiter(
   cache: CacheService,
   requestsPerWindow: number,
-  windowMs: number,
+  windowMs: number
 ) {
-  return async (c: Context, next: Next): Promise<Response | void> => {
+  return async (c: Context, next: Next): Promise<Response | undefined> => {
     const clientIp =
       c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ??
       c.req.header('x-real-ip') ??
@@ -58,7 +58,7 @@ export function createRateLimiter(
           instance: c.req.path,
           traceId: c.get('requestId'),
         },
-        429,
+        429
       );
     }
 

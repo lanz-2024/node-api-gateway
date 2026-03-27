@@ -5,8 +5,8 @@
  * stays lean. Protected by its own circuit breaker.
  */
 
-import type { SearchResult, SearchResponse } from '../types/index.js';
 import { CircuitBreaker } from '../lib/circuit-breaker.js';
+import type { SearchResponse, SearchResult } from '../types/index.js';
 
 export interface AlgoliaServiceOptions {
   appId: string;
@@ -67,8 +67,8 @@ export class AlgoliaService {
         hitsPerPage: params.hitsPerPage ?? 20,
       };
 
-      if (params.facets?.length) body['facets'] = params.facets;
-      if (params.facetFilters?.length) body['facetFilters'] = params.facetFilters;
+      if (params.facets?.length) body.facets = params.facets;
+      if (params.facetFilters?.length) body.facetFilters = params.facetFilters;
 
       const url = `https://${this.appId}-dsn.algolia.net/1/indexes/${this.indexName}/query`;
       const res = await fetch(url, {
@@ -108,7 +108,7 @@ export class AlgoliaService {
                 value,
                 count,
               })),
-            ]),
+            ])
           )
         : undefined;
 

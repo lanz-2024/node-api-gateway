@@ -5,8 +5,8 @@
  * Downstream services and log lines include this ID for distributed tracing.
  */
 
-import type { Context, Next } from 'hono';
 import { randomUUID } from 'node:crypto';
+import type { Context, Next } from 'hono';
 
 export async function requestId(c: Context, next: Next): Promise<void> {
   const existing = c.req.header('x-request-id');

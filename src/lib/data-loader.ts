@@ -11,8 +11,8 @@
  */
 
 import DataLoader from 'dataloader';
-import type { Product } from '../types/index.js';
 import type { WooCommerceService } from '../services/woocommerce.service.js';
+import type { Product } from '../types/index.js';
 
 export type { Product };
 
@@ -25,13 +25,11 @@ export function createProductLoader(wcService: WooCommerceService): DataLoader<n
 
       // DataLoader requires results in the same order as keys,
       // and an Error entry for any key that couldn't be resolved.
-      return ids.map(
-        (id) => productMap.get(id) ?? new Error(`Product ${id} not found`),
-      );
+      return ids.map((id) => productMap.get(id) ?? new Error(`Product ${id} not found`));
     },
     {
       maxBatchSize: 50,
       cache: true,
-    },
+    }
   );
 }
