@@ -19,19 +19,19 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import pino from 'pino';
-import { requestId } from './middleware/request-id.js';
+import { env } from './config/env.js';
 import { createAuthMiddleware } from './middleware/auth.js';
-import { createRateLimiter } from './middleware/rate-limiter.js';
 import { createCacheMiddleware } from './middleware/cache.js';
 import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
-import { createProductsRouter } from './routes/products.js';
+import { createRateLimiter } from './middleware/rate-limiter.js';
+import { requestId } from './middleware/request-id.js';
 import { createCartRouter } from './routes/cart.js';
-import { createSearchRouter } from './routes/search.js';
 import { createHealthRouter } from './routes/health.js';
-import { WooCommerceService } from './services/woocommerce.service.js';
+import { createProductsRouter } from './routes/products.js';
+import { createSearchRouter } from './routes/search.js';
 import { AlgoliaService } from './services/algolia.service.js';
 import { createCacheService } from './services/cache.service.js';
-import { env } from './config/env.js';
+import { WooCommerceService } from './services/woocommerce.service.js';
 
 export interface AppOptions {
   /** Override default services (useful in tests). */
@@ -62,7 +62,7 @@ export function createApp(options: AppOptions = {}): Hono {
 
   // ── Logger ──────────────────────────────────────────────────────────────────
   const logger = pino({
-    level: env.NODE_ENV === 'test' ? 'silent' : (process.env['LOG_LEVEL'] ?? 'info'),
+    level: env.NODE_ENV === 'test' ? 'silent' : (process.env.LOG_LEVEL ?? 'info'),
     ...(env.NODE_ENV === 'development'
       ? { transport: { target: 'pino-pretty', options: { colorize: true } } }
       : {}),
@@ -79,7 +79,7 @@ export function createApp(options: AppOptions = {}): Hono {
       allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowHeaders: ['Authorization', 'Content-Type', 'X-API-Key', 'X-Request-ID'],
       exposeHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-Cache'],
-    }),
+    })
   );
 
   // 1. Request ID
@@ -99,8 +99,14 @@ export function createApp(options: AppOptions = {}): Hono {
   });
 
   // 3. Rate limiter (skip for health checks)
-  app.use('/products/*', createRateLimiter(cache, env.RATE_LIMIT_REQUESTS, env.RATE_LIMIT_WINDOW_MS));
-  app.use('/search/*', createRateLimiter(cache, Math.floor(env.RATE_LIMIT_REQUESTS / 2), env.RATE_LIMIT_WINDOW_MS));
+  app.use(
+    '/products/*',
+    createRateLimiter(cache, env.RATE_LIMIT_REQUESTS, env.RATE_LIMIT_WINDOW_MS)
+  );
+  app.use(
+    '/search/*',
+    createRateLimiter(cache, Math.floor(env.RATE_LIMIT_REQUESTS / 2), env.RATE_LIMIT_WINDOW_MS)
+  );
   app.use('/cart/*', createRateLimiter(cache, env.RATE_LIMIT_REQUESTS, env.RATE_LIMIT_WINDOW_MS));
 
   // 4. Auth (skip health routes)

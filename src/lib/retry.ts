@@ -35,7 +35,7 @@ export async function withRetry<T>(fn: () => Promise<T>, options: RetryOptions =
       if (attempt === maxAttempts) break;
       if (shouldRetry && !shouldRetry(err, attempt)) break;
 
-      const exponential = Math.min(baseDelayMs * Math.pow(2, attempt - 1), maxDelayMs);
+      const exponential = Math.min(baseDelayMs * 2 ** (attempt - 1), maxDelayMs);
       const delay = jitter ? exponential * (0.5 + Math.random() * 0.5) : exponential;
 
       await new Promise<void>((resolve) => setTimeout(resolve, delay));
