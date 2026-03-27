@@ -68,6 +68,7 @@ export function createRateLimiter(
     c.header('X-RateLimit-Limit', String(requestsPerWindow));
     c.header('X-RateLimit-Remaining', String(remaining));
 
-    return next();
+    await next();
+    return;
   };
 }

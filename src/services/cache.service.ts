@@ -139,7 +139,7 @@ export function createCacheService(options: CacheServiceOptions = {}): CacheServ
  * Used in production bootstrap only; not called in tests.
  */
 export async function createRedisCacheService(redisUrl: string): Promise<CacheService> {
-  const { default: Redis } = await import('ioredis');
+  const { Redis } = await import('ioredis');
   const redis = new Redis(redisUrl, {
     lazyConnect: true,
     enableReadyCheck: true,

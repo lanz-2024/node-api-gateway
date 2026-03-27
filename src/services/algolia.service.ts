@@ -16,10 +16,10 @@ export interface AlgoliaServiceOptions {
 
 export interface AlgoliaSearchParams {
   query: string;
-  page?: number;
-  hitsPerPage?: number;
-  facets?: string[];
-  facetFilters?: string[];
+  page?: number | undefined;
+  hitsPerPage?: number | undefined;
+  facets?: string[] | undefined;
+  facetFilters?: string[] | undefined;
 }
 
 interface AlgoliaHit {
@@ -95,7 +95,7 @@ export class AlgoliaService {
         price: h.price ?? '0.00',
         sku: h.sku ?? '',
         slug: h.slug ?? '',
-        image: h.image,
+        ...(h.image !== undefined ? { image: h.image } : {}),
       }));
 
       // Transform Algolia facets → our format
@@ -117,7 +117,7 @@ export class AlgoliaService {
         total: data.nbHits,
         page: data.page + 1, // normalize to 1-based
         per_page: data.hitsPerPage,
-        facets,
+        ...(facets !== undefined ? { facets } : {}),
         query: params.query,
       };
     });

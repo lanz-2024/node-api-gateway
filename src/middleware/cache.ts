@@ -40,7 +40,8 @@ export function createCacheMiddleware(cache: CacheService, options: CacheMiddlew
 
     // Only cache idempotent requests
     if (skipMethods.includes(method)) {
-      return next();
+      await next();
+      return;
     }
 
     const cacheKey = keyFn
