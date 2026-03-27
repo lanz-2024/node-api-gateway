@@ -16,10 +16,10 @@ export interface AlgoliaServiceOptions {
 
 export interface AlgoliaSearchParams {
   query: string;
-  page?: number;
-  hitsPerPage?: number;
-  facets?: string[];
-  facetFilters?: string[];
+  page?: number | undefined;
+  hitsPerPage?: number | undefined;
+  facets?: string[] | undefined;
+  facetFilters?: string[] | undefined;
 }
 
 interface AlgoliaHit {

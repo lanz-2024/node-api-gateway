@@ -28,12 +28,12 @@ export interface ProductCategory {
 }
 
 export interface ProductsListParams {
-  page?: number;
-  per_page?: number;
-  category?: string;
-  search?: string;
-  orderby?: 'date' | 'price' | 'popularity' | 'rating';
-  order?: 'asc' | 'desc';
+  page?: number | undefined;
+  per_page?: number | undefined;
+  category?: string | undefined;
+  search?: string | undefined;
+  orderby?: 'date' | 'price' | 'popularity' | 'rating' | undefined;
+  order?: 'asc' | 'desc' | undefined;
 }
 
 // ─── Cart ───────────────────────────────────────────────────────────────────
@@ -41,12 +41,12 @@ export interface ProductsListParams {
 export interface CartItem {
   key: string;
   product_id: number;
-  variation_id?: number;
+  variation_id?: number | undefined;
   quantity: number;
   name: string;
   price: string;
   line_total: string;
-  image?: ProductImage;
+  image?: ProductImage | undefined;
 }
 
 export interface Cart {
@@ -81,8 +81,8 @@ export interface SearchResult {
   price: string;
   sku: string;
   slug: string;
-  image?: string;
-  score?: number;
+  image?: string | undefined;
+  score?: number | undefined;
 }
 
 export interface SearchResponse {
@@ -90,7 +90,7 @@ export interface SearchResponse {
   total: number;
   page: number;
   per_page: number;
-  facets?: Record<string, SearchFacet[]>;
+  facets?: Record<string, SearchFacet[]> | undefined;
   query: string;
 }
 
@@ -117,9 +117,9 @@ export interface ProblemDetails {
   type: string;
   title: string;
   status: number;
-  detail?: string;
-  instance?: string;
-  traceId?: string;
+  detail?: string | undefined;
+  instance?: string | undefined;
+  traceId?: string | undefined;
 }
 
 // ─── Health ──────────────────────────────────────────────────────────────────
