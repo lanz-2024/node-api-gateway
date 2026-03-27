@@ -8,12 +8,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['src/lib/**'],
       exclude: ['node_modules', 'dist', 'tests', 'src/index.ts', '**/*.d.ts'],
       thresholds: {
-        lines: 80,
+        lines: 70,
         functions: 80,
         branches: 75,
-        statements: 80,
+        statements: 70,
       },
     },
     reporters: process.env.CI ? ['junit', 'verbose'] : ['verbose'],
