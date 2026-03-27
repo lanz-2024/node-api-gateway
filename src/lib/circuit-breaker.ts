@@ -34,7 +34,7 @@ export class CircuitBreaker {
 
   constructor(
     private readonly name: string,
-    options: CircuitBreakerOptions,
+    options: CircuitBreakerOptions
   ) {
     this.threshold = options.threshold;
     this.timeout = options.timeout;

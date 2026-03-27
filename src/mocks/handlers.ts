@@ -5,9 +5,9 @@
 
 import { http, HttpResponse } from 'msw';
 
-const WC_BASE = process.env['WOOCOMMERCE_URL'] ?? 'http://localhost:8080';
-const ALGOLIA_APP_ID = process.env['ALGOLIA_APP_ID'] ?? 'test-app-id';
-const ALGOLIA_INDEX = process.env['ALGOLIA_INDEX_NAME'] ?? 'products';
+const WC_BASE = process.env.WOOCOMMERCE_URL ?? 'http://localhost:8080';
+const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID ?? 'test-app-id';
+const ALGOLIA_INDEX = process.env.ALGOLIA_INDEX_NAME ?? 'products';
 
 const mockProducts = [
   {
@@ -44,11 +44,11 @@ export const handlers = [
 
   // WooCommerce: single product
   http.get(`${WC_BASE}/wp-json/wc/v3/products/:id`, ({ params }) => {
-    const product = mockProducts.find((p) => p.id === Number(params['id']));
+    const product = mockProducts.find((p) => p.id === Number(params.id));
     if (!product) {
       return HttpResponse.json(
         { code: 'woocommerce_rest_product_invalid_id', message: 'Invalid ID' },
-        { status: 404 },
+        { status: 404 }
       );
     }
     return HttpResponse.json(product);
@@ -82,11 +82,13 @@ export const handlers = [
   http.post(
     `https://${ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/${ALGOLIA_INDEX}/query`,
     async ({ request }) => {
-      const body = (await request.json()) as { query?: string; page?: number; hitsPerPage?: number };
+      const body = (await request.json()) as {
+        query?: string;
+        page?: number;
+        hitsPerPage?: number;
+      };
       const query = body.query ?? '';
-      const hits = mockProducts.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase()),
-      );
+      const hits = mockProducts.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
       return HttpResponse.json({
         hits: hits.map((p) => ({
           objectID: String(p.id),
@@ -103,6 +105,6 @@ export const handlers = [
         processingTimeMS: 1,
         query,
       });
-    },
+    }
   ),
 ];

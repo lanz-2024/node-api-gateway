@@ -35,7 +35,7 @@ export function createCacheMiddleware(cache: CacheService, options: CacheMiddlew
     keyFn,
   } = options;
 
-  return async (c: Context, next: Next): Promise<Response | void> => {
+  return async (c: Context, next: Next): Promise<Response | undefined> => {
     const method = c.req.method.toUpperCase();
 
     // Only cache idempotent requests
@@ -102,7 +102,7 @@ async function revalidate(
   next: Next,
   cache: CacheService,
   key: string,
-  ttlSeconds: number,
+  ttlSeconds: number
 ): Promise<void> {
   try {
     await next();

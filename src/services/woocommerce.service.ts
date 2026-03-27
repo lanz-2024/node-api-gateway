@@ -5,9 +5,9 @@
  * and DataLoader can be injected and tested without a real WC instance.
  */
 
-import type { Product, Cart, CartItem, ProductsListParams } from '../types/index.js';
 import { CircuitBreaker } from '../lib/circuit-breaker.js';
-import { withRetry, isRetryableError } from '../lib/retry.js';
+import { isRetryableError, withRetry } from '../lib/retry.js';
+import type { Cart, CartItem, Product, ProductsListParams } from '../types/index.js';
 
 export interface WooCommerceServiceOptions {
   baseUrl: string;
@@ -25,7 +25,7 @@ export class WooCommerceService {
   constructor(options: WooCommerceServiceOptions) {
     this.baseUrl = options.baseUrl.replace(/\/$/, '');
     this.authHeader = `Basic ${Buffer.from(
-      `${options.consumerKey}:${options.consumerSecret}`,
+      `${options.consumerKey}:${options.consumerSecret}`
     ).toString('base64')}`;
 
     this.circuitBreaker = new CircuitBreaker('woocommerce', {
@@ -41,7 +41,9 @@ export class WooCommerceService {
 
   // ─── Products ──────────────────────────────────────────────────────────────
 
-  async getProducts(params: ProductsListParams = {}): Promise<{ products: Product[]; total: number }> {
+  async getProducts(
+    params: ProductsListParams = {}
+  ): Promise<{ products: Product[]; total: number }> {
     return this.circuitBreaker.execute(async () => {
       return withRetry(
         async () => {
@@ -61,10 +63,10 @@ export class WooCommerceService {
           }
 
           const products = (await res.json()) as Product[];
-          const total = parseInt(res.headers.get('X-WP-Total') ?? '0', 10);
+          const total = Number.parseInt(res.headers.get('X-WP-Total') ?? '0', 10);
           return { products, total };
         },
-        { shouldRetry: isRetryableError },
+        { shouldRetry: isRetryableError }
       );
     });
   }
@@ -79,7 +81,7 @@ export class WooCommerceService {
           if (!res.ok) throw await this.httpError(res);
           return (await res.json()) as Product;
         },
-        { shouldRetry: isRetryableError },
+        { shouldRetry: isRetryableError }
       );
     });
   }
@@ -98,7 +100,7 @@ export class WooCommerceService {
           if (!res.ok) throw await this.httpError(res);
           return (await res.json()) as Product[];
         },
-        { shouldRetry: isRetryableError },
+        { shouldRetry: isRetryableError }
       );
     });
   }
@@ -119,15 +121,19 @@ export class WooCommerceService {
     sessionToken: string,
     productId: number,
     quantity: number,
-    variationId?: number,
+    variationId?: number
   ): Promise<CartItem> {
     return this.circuitBreaker.execute(async () => {
       const body: Record<string, unknown> = { id: productId, quantity };
-      if (variationId) body['variation_id'] = variationId;
+      if (variationId) body.variation_id = variationId;
 
       const res = await fetch(`${this.baseUrl}/wp-json/wc/store/v1/cart/add-item`, {
         method: 'POST',
-        headers: { ...this.headers(), 'Cart-Token': sessionToken, 'Content-Type': 'application/json' },
+        headers: {
+          ...this.headers(),
+          'Cart-Token': sessionToken,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(body),
       });
       if (!res.ok) throw await this.httpError(res);
@@ -135,15 +141,15 @@ export class WooCommerceService {
     });
   }
 
-  async updateCartItem(
-    sessionToken: string,
-    itemKey: string,
-    quantity: number,
-  ): Promise<CartItem> {
+  async updateCartItem(sessionToken: string, itemKey: string, quantity: number): Promise<CartItem> {
     return this.circuitBreaker.execute(async () => {
       const res = await fetch(`${this.baseUrl}/wp-json/wc/store/v1/cart/update-item`, {
         method: 'POST',
-        headers: { ...this.headers(), 'Cart-Token': sessionToken, 'Content-Type': 'application/json' },
+        headers: {
+          ...this.headers(),
+          'Cart-Token': sessionToken,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ key: itemKey, quantity }),
       });
       if (!res.ok) throw await this.httpError(res);
@@ -155,7 +161,11 @@ export class WooCommerceService {
     return this.circuitBreaker.execute(async () => {
       const res = await fetch(`${this.baseUrl}/wp-json/wc/store/v1/cart/remove-item`, {
         method: 'POST',
-        headers: { ...this.headers(), 'Cart-Token': sessionToken, 'Content-Type': 'application/json' },
+        headers: {
+          ...this.headers(),
+          'Cart-Token': sessionToken,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ key: itemKey }),
       });
       if (!res.ok) throw await this.httpError(res);
