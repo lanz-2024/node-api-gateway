@@ -6,4 +6,3 @@ test-results/
 *.env.local
 *.log
 .DS_Store
-pnpm-lock.yaml
