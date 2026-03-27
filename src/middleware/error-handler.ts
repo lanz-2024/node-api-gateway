@@ -15,7 +15,7 @@ export class HttpError extends Error {
   constructor(
     public readonly status: number,
     public readonly title: string,
-    message?: string,
+    message?: string
   ) {
     super(message ?? title);
     this.name = 'HttpError';
@@ -71,7 +71,7 @@ export function errorHandler(err: Error, c: Context): Response {
   }
 
   // Unexpected error — don't leak internals
-  if (process.env['NODE_ENV'] !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     console.debug('[error-handler]', err);
   }
 
@@ -79,7 +79,7 @@ export function errorHandler(err: Error, c: Context): Response {
     type: 'https://httpstatuses.io/500',
     title: 'Internal Server Error',
     status: 500,
-    detail: process.env['NODE_ENV'] === 'production' ? undefined : err.message,
+    detail: process.env.NODE_ENV === 'production' ? undefined : err.message,
     instance,
     traceId,
   };

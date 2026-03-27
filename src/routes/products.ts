@@ -8,13 +8,13 @@
  * but still batches all load() calls within the same event-loop tick.
  */
 
+import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { z } from 'zod';
-import { zValidator } from '@hono/zod-validator';
 import { createProductLoader } from '../lib/data-loader.js';
 import { NotFoundError, ValidationError } from '../middleware/error-handler.js';
-import type { WooCommerceService } from '../services/woocommerce.service.js';
 import type { AlgoliaService } from '../services/algolia.service.js';
+import type { WooCommerceService } from '../services/woocommerce.service.js';
 import type { PaginatedResponse, Product } from '../types/index.js';
 
 interface ProductDeps {

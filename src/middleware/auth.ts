@@ -9,8 +9,8 @@
  * On failure, returns 401 with RFC 7807 Problem Details.
  */
 
-import { jwtVerify, type JWTPayload as JoseJWTPayload } from 'jose';
 import type { Context, Next } from 'hono';
+import { type JWTPayload as JoseJWTPayload, jwtVerify } from 'jose';
 import type { AuthContext } from '../types/index.js';
 
 export interface AuthMiddlewareOptions {
@@ -31,7 +31,7 @@ export function createAuthMiddleware(options: AuthMiddlewareOptions) {
   const secretBytes = new TextEncoder().encode(options.jwtSecret);
   const apiKeys = options.apiKeys ?? {};
 
-  return async (c: Context, next: Next): Promise<Response | void> => {
+  return async (c: Context, next: Next): Promise<Response | undefined> => {
     const authorization = c.req.header('authorization');
     const apiKey = c.req.header('x-api-key');
 
@@ -68,7 +68,7 @@ export function createAuthMiddleware(options: AuthMiddlewareOptions) {
             instance: c.req.path,
             traceId: c.get('requestId'),
           },
-          401,
+          401
         );
       }
     }
@@ -95,7 +95,7 @@ export function createAuthMiddleware(options: AuthMiddlewareOptions) {
           instance: c.req.path,
           traceId: c.get('requestId'),
         },
-        401,
+        401
       );
     }
 
@@ -109,14 +109,14 @@ export function createAuthMiddleware(options: AuthMiddlewareOptions) {
         instance: c.req.path,
         traceId: c.get('requestId'),
       },
-      401,
+      401
     );
   };
 }
 
 /** Require a specific role. Must be used after createAuthMiddleware. */
 export function requireRole(role: string) {
-  return async (c: Context, next: Next): Promise<Response | void> => {
+  return async (c: Context, next: Next): Promise<Response | undefined> => {
     const auth = c.get('auth');
     if (!auth?.roles.includes(role)) {
       return c.json(
@@ -128,7 +128,7 @@ export function requireRole(role: string) {
           instance: c.req.path,
           traceId: c.get('requestId'),
         },
-        403,
+        403
       );
     }
     return next();
